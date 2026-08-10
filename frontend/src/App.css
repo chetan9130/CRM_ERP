@@ -1,0 +1,9 @@
+/* Global layout helpers */
+.table-row-hover:hover {
+  background-color: var(--bg-base) !important;
+}
+
+.nav-active {
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
