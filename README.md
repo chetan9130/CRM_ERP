@@ -1,166 +1,664 @@
-# Mini ERP + CRM Operations Portal
+# CRM-ERP
 
-A full-stack, internal operations portal built for wholesale and distribution companies. This single-monorepo application covers user authentication, customer CRM interactions, product inventory alerts, and transaction-safe sales challan execution.
+A modern **Customer Relationship Management (CRM) and Enterprise Resource Planning (ERP)** system built with a React frontend and Node.js/Express backend. The platform provides centralized management for customers, products, challans, authentication, and business operations.
 
 ---
 
-## 1. Directory Structure
+## 🚀 Features
+
+### 🔐 Authentication & Authorization
+
+* User registration and login
+* Secure password hashing
+* JWT-based authentication
+* Protected API routes
+* Role-based access control
+* Persistent frontend authentication state
+
+### 👥 Customer Management
+
+* Create customers
+* View customer list
+* Update customer information
+* Delete customers
+* View customer details
+* Customer validation
+
+### 📦 Product Management
+
+* Add products
+* View products
+* Update product information
+* Delete products
+* Product validation
+* Product inventory-related information
+
+### 🧾 Challan Management
+
+* Create challans
+* View challan list
+* View challan details
+* Update challans
+* Manage customer/product information associated with challans
+* Challan validation
+
+### 📊 Dashboard
+
+* Centralized business dashboard
+* Quick access to CRM modules
+* Navigation through customers, products and challans
+* Protected dashboard routes
+
+### 🎨 Modern Frontend
+
+* React + TypeScript
+* Vite
+* Responsive layout
+* Reusable components
+* Protected routes
+* Role-based routes
+* API service layer
+* Modern sidebar and topbar navigation
+
+---
+
+## 🏗️ Project Architecture
+
+The project follows a monorepo structure:
 
 ```text
-CRM/
+CRM_ERP/
+│
 ├── backend/
+│   ├── database/
+│   │   ├── schema.sql
+│   │   └── seed.sql
+│   │
+│   ├── migrations/
+│   │   └── 001_init.sql
+│   │
+│   ├── scripts/
+│   │   ├── init-db.js
+│   │   ├── migrate.js
+│   │   └── seed.js
+│   │
 │   ├── src/
-│   │   ├── config/          # DB connection setups
-│   │   ├── middleware/      # JWT auth & role check guards
-│   │   ├── routes/          # API route controllers
-│   │   ├── validators/      # Zod input validation schemas
-│   │   └── index.js         # App entrypoint
-│   ├── migrations/          # PostgreSQL SQL setup scripts
-│   ├── scripts/             # Migration and seeding JS runners
+│   │   ├── config/
+│   │   │   └── db.js
+│   │   │
+│   │   ├── middleware/
+│   │   │   └── auth.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── auth.js
+│   │   │   ├── challans.js
+│   │   │   ├── customers.js
+│   │   │   └── products.js
+│   │   │
+│   │   ├── validators/
+│   │   │   ├── challan.js
+│   │   │   ├── customer.js
+│   │   │   └── product.js
+│   │   │
+│   │   └── index.js
+│   │
 │   ├── .env.example
-│   ├── tsconfig.json
 │   ├── package.json
-│   └── api.http             # REST Client testing collection
+│   └── package-lock.json
+│
 ├── frontend/
+│   ├── public/
+│   │
 │   ├── src/
-│   │   ├── api/             # Axios client bindings
-│   │   ├── components/      # Common Layout files (Sidebar, Topbar)
-│   │   ├── context/         # AuthContext state wrappers
-│   │   ├── pages/           # Operations Dashboard, CRM & Product screens
-│   │   ├── routes/          # Protected and Role-based router guards
-│   │   ├── types/           # TypeScript interfaces matching DB schema
-│   │   ├── App.tsx          # Router wiring
+│   │   ├── api/
+│   │   │   ├── auth.ts
+│   │   │   ├── challans.ts
+│   │   │   ├── client.ts
+│   │   │   ├── customers.ts
+│   │   │   └── products.ts
+│   │   │
+│   │   ├── components/
+│   │   │   └── layout/
+│   │   │       ├── AppLayout.tsx
+│   │   │       ├── Sidebar.tsx
+│   │   │       └── Topbar.tsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── AuthContext.tsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── challans/
+│   │   │   ├── customers/
+│   │   │   ├── products/
+│   │   │   ├── Dashboard.tsx
+│   │   │   └── Login.tsx
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   ├── RoleRoute.tsx
+│   │   │   └── router.tsx
+│   │   │
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── App.tsx
+│   │   ├── App.css
 │   │   └── main.tsx
-│   ├── index.html
+│   │
 │   ├── package.json
-│   └── tsconfig.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+│
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 2. Local Setup Instructions
+## 🛠️ Tech Stack
 
-### Prerequisites
-- Node.js (v18+)
-- PostgreSQL database instance (local or Supabase)
+### Frontend
 
-### Step 1: Install Dependencies
-Install packages in both backend and frontend directories:
+| Technology      | Purpose                   |
+| --------------- | ------------------------- |
+| React           | UI development            |
+| TypeScript      | Type safety               |
+| Vite            | Development/build tooling |
+| React Router    | Application routing       |
+| CSS             | Styling                   |
+| Fetch/API layer | Backend communication     |
+
+### Backend
+
+| Technology | Purpose             |
+| ---------- | ------------------- |
+| Node.js    | Runtime             |
+| Express.js | REST API            |
+| PostgreSQL | Relational database |
+| `pg`       | PostgreSQL client   |
+| JWT        | Authentication      |
+| bcrypt     | Password hashing    |
+
+### Development Tools
+
+* Git
+* GitHub
+* VS Code
+* pgAdmin
+* Postman / API testing tools
+
+---
+
+# 📋 Prerequisites
+
+Before running the project, install:
+
+* Node.js 18+
+* npm
+* PostgreSQL
+* pgAdmin 4
+* Git
+
+Check your Node.js version:
 
 ```bash
-# In backend/
+node --version
+```
+
+Check npm:
+
+```bash
+npm --version
+```
+
+---
+
+# 🗄️ PostgreSQL Setup
+
+The project uses **local PostgreSQL**, not Supabase.
+
+Open pgAdmin and create a database:
+
+```text
+Database Name: crm_erp
+```
+
+Alternatively, create it using SQL:
+
+```sql
+CREATE DATABASE crm_erp;
+```
+
+Verify the database exists:
+
+```sql
+SELECT datname
+FROM pg_database;
+```
+
+---
+
+# ⚙️ Backend Setup
+
+Navigate to the backend:
+
+```bash
+cd backend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create an environment file:
+
+```bash
+copy .env.example .env
+```
+
+For macOS/Linux:
+
+```bash
+cp .env.example .env
+```
+
+Configure `.env`:
+
+```env
+PORT=5000
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=crm_erp
+DB_USER=postgres
+DB_PASSWORD=YOUR_POSTGRES_PASSWORD
+
+JWT_SECRET=your_secure_jwt_secret
+```
+
+> Never commit your real `.env` file to GitHub.
+
+---
+
+# 🗃️ Initialize Database
+
+The project contains database schema and initialization scripts.
+
+Run the database initialization:
+
+```bash
+npm run db:init
+```
+
+If migrations are configured:
+
+```bash
+npm run migrate
+```
+
+For development seed data:
+
+```bash
+npm run seed
+```
+
+You can also execute:
+
+```text
+backend/database/schema.sql
+```
+
+directly from pgAdmin Query Tool if required.
+
+---
+
+# ▶️ Start Backend
+
+From the `backend` directory:
+
+```bash
+npm start
+```
+
+The API will run on:
+
+```text
+http://localhost:5000
+```
+
+Expected output:
+
+```text
+Server running on port 5000
+Database connected successfully.
+```
+
+---
+
+# 💻 Frontend Setup
+
+Open another terminal.
+
+Navigate to the frontend:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Vite will provide a local URL, usually:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# 🔗 Frontend + Backend
+
+During local development:
+
+```text
+React Frontend
+      │
+      │ HTTP Requests
+      ▼
+Express API
+      │
+      │ SQL Queries
+      ▼
+PostgreSQL
+```
+
+Typical setup:
+
+```text
+Frontend → http://localhost:5173
+Backend  → http://localhost:5000
+Database → localhost:5432
+```
+
+The frontend API client should point to the backend API:
+
+```text
+http://localhost:5000
+```
+
+---
+
+# 🔑 Authentication
+
+The application uses token-based authentication.
+
+Typical authentication flow:
+
+```text
+User
+ │
+ ▼
+Login Page
+ │
+ ▼
+POST /api/auth/login
+ │
+ ▼
+Express Backend
+ │
+ ▼
+PostgreSQL
+ │
+ ▼
+JWT Token
+ │
+ ▼
+Frontend
+```
+
+Protected API requests include the authentication token.
+
+---
+
+# 📡 API Modules
+
+The backend currently contains API routes for:
+
+### Authentication
+
+```text
+/api/auth
+```
+
+### Customers
+
+```text
+/api/customers
+```
+
+### Products
+
+```text
+/api/products
+```
+
+### Challans
+
+```text
+/api/challans
+```
+
+Example:
+
+```http
+GET /api/customers
+```
+
+Create a customer:
+
+```http
+POST /api/customers
+```
+
+Get products:
+
+```http
+GET /api/products
+```
+
+Get challans:
+
+```http
+GET /api/challans
+```
+
+Authentication:
+
+```http
+POST /api/auth/login
+```
+
+---
+
+# 🧪 API Testing
+
+You can test the backend using:
+
+* Postman
+* VS Code REST Client
+* `backend/api.http`
+
+Start the backend first:
+
+```bash
+npm start
+```
+
+Then execute the API requests.
+
+---
+
+# 🔒 Security
+
+The project follows basic security practices:
+
+* Password hashing using bcrypt
+* JWT authentication
+* Protected API routes
+* Environment variables for secrets
+* PostgreSQL parameterized queries
+* Input validation
+* `.env` excluded from Git
+
+Never commit:
+
+```text
+.env
+```
+
+or database passwords/secrets.
+
+---
+
+# 🌱 Development Workflow
+
+Clone the repository:
+
+```bash
+git clone https://github.com/chetan9130/CRM_ERP.git
+```
+
+Enter the project:
+
+```bash
+cd CRM_ERP
+```
+
+Install backend dependencies:
+
+```bash
 cd backend
 npm install
+```
 
-# In frontend/
+Install frontend dependencies:
+
+```bash
 cd ../frontend
 npm install
 ```
 
-### Step 2: Configure Environment Variables
-Copy `.env.example` to `.env` in both folders and adjust values.
-
-**Backend (`backend/.env`)**:
-```env
-PORT=5000
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres
-# Or individual connection settings:
-# DB_HOST=localhost
-# DB_PORT=5432
-# DB_USER=postgres
-# DB_PASSWORD=password
-# DB_NAME=crm_erp
-# DB_SSL=true
-JWT_SECRET=your_super_secret_jwt_key_here
-```
-
-**Frontend (`frontend/.env`)**:
-Create a `.env` file inside `frontend/` directory:
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
----
-
-## 3. Running Database Migrations & Seeding
-
-The backend includes custom TypeScript scripts to safely build schemas and seed sample data.
+Run backend:
 
 ```bash
-# Make sure you are inside the backend directory
-cd backend
-
-# 1. Run migrations (Creates tables, check constraints & foreign keys)
-npm run db:migrate
-
-# 2. Run seed script (Truncates existing tables and inserts fresh mock data)
-npm run db:seed
+cd ../backend
+npm start
 ```
 
-### Mock Accounts Seeded
-You can log in using these accounts to test role-based constraints:
-
-| Role | Email | Password | Allowed Operations |
-|---|---|---|---|
-| **Admin** | `admin@example.com` | `admin123` | Full access to CRM, Inventory, Challans, and deletions. |
-| **Sales** | `sales@example.com` | `sales123` | CRUD Customers, Add Notes, Create Draft & Confirm Challans. |
-| **Warehouse** | `warehouse@example.com` | `warehouse123` | Read CRM, CRUD Products, Adjust Stock levels. Route guarded from editing challans/customers. |
-| **Accounts** | `accounts@example.com` | `accounts123` | Read-only access to Customers, Products, and Challans. |
-
----
-
-## 4. Running Locally
-
-Start both the backend API server and Vite frontend dev server:
+Run frontend in another terminal:
 
 ```bash
-# Start backend API (runs on http://localhost:5000)
-cd backend
-npm run dev
-
-# Start frontend Vite dev server (runs on http://localhost:5173)
 cd frontend
 npm run dev
 ```
 
 ---
 
-## 5. Architecture Overview
+# 📌 Environment Variables
 
-### Backend API Design
-The backend is a Node.js Express server. Database connectivity is managed through connection pools using the `pg` client, optimized with SSL configurations to support Supabase/Railway/Aiven/Render deployments natively. Security is enforced through stateless JWT validation middleware (`authenticateToken`) alongside role checking decorators (`requireRole`), ensuring strict backend verification of user operations. 
+Backend `.env`:
 
-### Database Concurrency Control
-To ensure absolute inventory accuracy under concurrent orders, Sales Challan confirmation is processed inside a strict database transaction. The engine sorts product IDs in ascending order and locks product rows sequentially using `SELECT ... FOR UPDATE` query operations. This prevents deadlock conditions and guarantees that stock checks are atomic—if any line item request exceeds available inventory, the transaction rolls back completely, preventing partial orders.
+```env
+PORT=5000
 
-### Frontend Application Design
-The client is scaffolded with Vite and React, coded in strict TypeScript. Routing is configured through modern React Router DOM, protected with token check wrappers (`ProtectedRoute`) and authorization walls (`RoleRoute`). Responsive UI grids are styled using vanilla CSS variables, adopting a dark-mode-first aesthetic with glassmorphic cards and color-coded role indicators.
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=crm_erp
+DB_USER=postgres
+DB_PASSWORD=YOUR_POSTGRES_PASSWORD
 
----
+JWT_SECRET=YOUR_SECRET
+```
 
-## 6. Deployment Guidelines
-
-### Database (Supabase or local PostgreSQL)
-1. Register a PostgreSQL database instance on [Supabase](https://supabase.com).
-2. Grab the DATABASE_URL connection string.
-3. Paste the credentials into the backend environment variables (`backend/.env`).
-
-### Backend API (Render)
-1. Deploy the `backend/` folder to [Render](https://render.com) as a Web Service.
-2. Select Node environment and set build command: `npm install && npm run build`.
-3. Set start command: `npm start`.
-4. Add environment variables: `PORT=10000`, `DATABASE_URL` (Supabase connection), and `JWT_SECRET`.
-
-### Frontend Client (Vercel)
-1. Deploy the `frontend/` folder to [Vercel](https://vercel.com).
-2. Configure build settings: build command is `npm run build` and output directory is `dist`.
-3. Add environment variable: `VITE_API_URL=https://your-backend-render-app.onrender.com/api`.
+Frontend environment variables can be added according to the API configuration used by the application.
 
 ---
 
-## 7. Known Limitations & Assumptions
+# 🧩 Future Improvements
 
-1. **Self-Deleting Protection**: The backend database restricts deleting products or customer accounts if they are referenced in confirmed stock movements or sales challan line items to maintain audit history consistency (returns `409 Conflict`).
-2. **Sequential Challan Sequences**: Challan numbers are governed by an auto-increment sequence helper table (`sales_challan_number_seq`). If a transaction fails or rolls back, sequence increments may be skipped, which is standard to prioritize transaction throughput.
-3. **Session Expiration Interception**: The Axios client responds to token validation failures (401) by immediately clearing localStorage and reloading the window to redirect users to `/login`.
+Planned improvements may include:
+
+* Advanced analytics dashboard
+* Sales and revenue reports
+* Inventory management
+* Invoice generation
+* PDF challan generation
+* Email notifications
+* User and permission management
+* Advanced search and filtering
+* Export reports to Excel/PDF
+* Audit logs
+* Cloud deployment
+* Automated database migrations
+* Docker support
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+### 1. Fork the repository
+
+```bash
+git clone https://github.com/chetan9130/CRM_ERP.git
+```
+
+### 2. Create a branch
+
+```bash
+git checkout -b feature/your-feature
+```
+
+### 3. Make your changes
+
+### 4. Commit
+
+```bash
+git add .
+git commit -m "Add your feature"
+```
+
+### 5. Push
+
+```bash
+git push origin feature/your-feature
+```
+
+### 6. Open a Pull Request
+
+---
+
+# 👨‍💻 Author
+
+**Chetan Sonawane**
+
+GitHub:
+
+https://github.com/chetan9130
+
+---
+
+
+**CRM-ERP — One platform for managing customers, products, challans, and business operations.**
