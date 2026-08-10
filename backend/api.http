@@ -1,0 +1,287 @@
+@baseUrl = http://localhost:5000/api
+@adminEmail = admin@example.com
+@adminPassword = admin123
+@salesEmail = sales@example.com
+@salesPassword = sales123
+@warehouseEmail = warehouse@example.com
+@warehousePassword = warehouse123
+@accountsEmail = accounts@example.com
+@accountsPassword = accounts123
+
+### ====================================================================
+### 1. AUTHENTICATION MODULE
+### ====================================================================
+
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+###
+
+# @name salesLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{salesEmail}}",
+  "password": "{{salesPassword}}"
+}
+
+###
+
+# @name warehouseLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{warehouseEmail}}",
+  "password": "{{warehousePassword}}"
+}
+
+###
+
+# @name accountsLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{accountsEmail}}",
+  "password": "{{accountsPassword}}"
+}
+
+###
+
+### Extract Token from Admin Login response
+@adminToken = {{adminLogin.response.body.token}}
+### Extract Token from Sales Login response
+@salesToken = {{salesLogin.response.body.token}}
+### Extract Token from Warehouse Login response
+@warehouseToken = {{warehouseLogin.response.body.token}}
+
+
+### ====================================================================
+### 2. CUSTOMER CRM MODULE
+### ====================================================================
+
+# @name listCustomers
+GET {{baseUrl}}/customers?page=1&limit=5&search=&status=active&customer_type=wholesale
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name createCustomer
+POST {{baseUrl}}/customers
+Authorization: Bearer {{salesToken}}
+Content-Type: application/json
+
+{
+  "name": "Acme Industrial Supplies",
+  "mobile": "+919876543210",
+  "email": "procurement@acmeind.com",
+  "business_name": "Acme Industries Ltd",
+  "gst_number": "27GGGGG7777G7Z7",
+  "customer_type": "wholesale",
+  "address": "G-90 Industrial Zone, Sector 4, Mumbai",
+  "status": "lead",
+  "follow_up_date": "2026-08-25"
+}
+
+###
+@newCustomerId = {{createCustomer.response.body.id}}
+
+###
+
+# @name getCustomerDetail
+GET {{baseUrl}}/customers/{{newCustomerId}}
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name updateCustomer
+PUT {{baseUrl}}/customers/{{newCustomerId}}
+Authorization: Bearer {{salesToken}}
+Content-Type: application/json
+
+{
+  "name": "Acme Industrial Supplies (Updated)",
+  "mobile": "+919876543210",
+  "email": "procurement@acmeind.com",
+  "business_name": "Acme Industries Ltd",
+  "gst_number": "27GGGGG7777G7Z7",
+  "customer_type": "distributor",
+  "address": "G-90 Industrial Zone, Sector 4, Mumbai, Maharashtra",
+  "status": "active",
+  "follow_up_date": "2026-08-30"
+}
+
+###
+
+# @name addCustomerNote
+POST {{baseUrl}}/customers/{{newCustomerId}}/notes
+Authorization: Bearer {{salesToken}}
+Content-Type: application/json
+
+{
+  "note": "Spoke with manager today. They are interested in bulk headset purchasing. Follow up next week."
+}
+
+###
+
+# @name listCustomerNotes
+GET {{baseUrl}}/customers/{{newCustomerId}}/notes
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name deleteCustomer
+DELETE {{baseUrl}}/customers/{{newCustomerId}}
+Authorization: Bearer {{adminToken}}
+
+
+### ====================================================================
+### 3. PRODUCT & INVENTORY MODULE
+### ====================================================================
+
+# @name listProducts
+GET {{baseUrl}}/products?page=1&limit=10&search=&category=Accessories
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name listLowStockProducts
+GET {{baseUrl}}/products?low_stock=true
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name createProduct
+POST {{baseUrl}}/products
+Authorization: Bearer {{warehouseToken}}
+Content-Type: application/json
+
+{
+  "name": "Super Bass Soundbar 300W",
+  "sku": "PROD-SBR-888",
+  "category": "Electronics",
+  "unit_price": 249.99,
+  "current_stock": 25,
+  "min_stock_alert": 5,
+  "location": "Aisle 4, Shelf A"
+}
+
+###
+@newProductId = {{createProduct.response.body.id}}
+
+###
+
+# @name getProductDetail
+GET {{baseUrl}}/products/{{newProductId}}
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name updateProduct
+PUT {{baseUrl}}/products/{{newProductId}}
+Authorization: Bearer {{warehouseToken}}
+Content-Type: application/json
+
+{
+  "name": "Super Bass Soundbar 350W Plus",
+  "sku": "PROD-SBR-888",
+  "category": "Electronics",
+  "unit_price": 269.99,
+  "current_stock": 25,
+  "min_stock_alert": 8,
+  "location": "Aisle 4, Shelf C"
+}
+
+###
+
+# @name adjustStockManual
+POST {{baseUrl}}/products/{{newProductId}}/stock
+Authorization: Bearer {{warehouseToken}}
+Content-Type: application/json
+
+{
+  "quantity_changed": 15,
+  "movement_type": "IN",
+  "reason": "Received vendor replenishment shipment"
+}
+
+###
+
+# @name getProductMovements
+GET {{baseUrl}}/products/{{newProductId}}/movements
+Authorization: Bearer {{adminToken}}
+
+
+### ====================================================================
+### 4. SALES CHALLAN MODULE
+### ====================================================================
+
+# @name listChallans
+GET {{baseUrl}}/challans?page=1&limit=5&status=draft
+Authorization: Bearer {{adminToken}}
+
+###
+
+# @name createChallanDraft
+POST {{baseUrl}}/challans
+Authorization: Bearer {{salesToken}}
+Content-Type: application/json
+
+{
+  "customer_id": "john_doe_id_placeholder_or_real_uuid",
+  "items": [
+    {
+      "product_id": "product_1_uuid_placeholder",
+      "quantity": 3
+    },
+    {
+      "product_id": "product_2_uuid_placeholder",
+      "quantity": 2
+    }
+  ]
+}
+
+###
+# Note: To test the actual confirm/cancel flow below, 
+# please replace variables with real UUIDs from seeding!
+@challanId = real_challan_uuid_here
+@productIdToLock = real_product_uuid_here
+
+###
+
+# @name editChallanDraft
+PUT {{baseUrl}}/challans/{{challanId}}
+Authorization: Bearer {{salesToken}}
+Content-Type: application/json
+
+{
+  "customer_id": "john_doe_id_placeholder_or_real_uuid",
+  "items": [
+    {
+      "product_id": "{{productIdToLock}}",
+      "quantity": 5
+    }
+  ]
+}
+
+###
+
+# @name confirmChallan
+# Locks product row, checks stock, decrements inventory, logs OUT stock movement.
+POST {{baseUrl}}/challans/{{challanId}}/confirm
+Authorization: Bearer {{salesToken}}
+
+###
+
+# @name cancelChallan
+# Reverses stocks with IN movements if confirmed.
+POST {{baseUrl}}/challans/{{challanId}}/cancel
+Authorization: Bearer {{salesToken}}
