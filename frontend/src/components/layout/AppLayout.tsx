@@ -52,7 +52,17 @@ export const AppLayout: React.FC = () => {
       {isMobile && mobileOpen && (
         <div 
           onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 40,
+            transition: 'opacity 0.25s ease'
+          }}
         />
       )}
 
@@ -83,9 +93,9 @@ export const AppLayout: React.FC = () => {
 
         {/* Content Area */}
         <main 
-          className="px-4 py-6 sm:px-6 lg:px-8"
           style={{
             flex: 1,
+            padding: isMobile ? '1.5rem 1rem' : '2.25rem 2rem',
             marginTop: '70px', // Offset Topbar height
             width: '100%',
             maxWidth: '1440px',

@@ -221,3 +221,20 @@ button:disabled, .btn:disabled {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* Responsive helper classes (since Tailwind is not compiled in this project) */
+@media (max-width: 639px) {
+  .hidden-sm-down {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .hidden-md-down {
+    display: none !important;
+  }
+}
+@media (max-width: 1023px) {
+  .hidden-lg-down {
+    display: none !important;
+  }
+}

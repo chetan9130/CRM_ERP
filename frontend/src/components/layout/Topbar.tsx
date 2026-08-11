@@ -52,11 +52,11 @@ export const Topbar: React.FC<TopbarProps> = ({
 
   return (
     <header 
-      className="px-4 sm:px-8"
       style={{
         height: '70px',
         backgroundColor: 'var(--bg-surface)',
         borderBottom: '1px solid var(--border-color)',
+        padding: isMobile ? '0 1rem' : '0 2rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -90,7 +90,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           </button>
         )}
         <div>
-          <span className="hidden sm:inline" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <span className="hidden-sm-down" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Operations Portal
           </span>
           <h2 style={{ fontSize: isMobile ? '1.05rem' : '1.2rem', fontWeight: 700, marginBottom: 0, color: 'var(--text-primary)', marginTop: isMobile ? '0' : '-0.15rem' }}>
@@ -103,7 +103,7 @@ export const Topbar: React.FC<TopbarProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.75rem' : '1.5rem' }}>
         
         {/* Placeholder system action buttons */}
-        <div className="hidden md:flex" style={{ alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
+        <div className="hidden-md-down" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
           <button style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: '0.35rem', borderRadius: '50%' }} title="Help">
             <HelpCircle style={{ width: '1.2rem', height: '1.2rem' }} />
           </button>
@@ -136,7 +136,7 @@ export const Topbar: React.FC<TopbarProps> = ({
             {getInitials(user.name)}
           </div>
 
-          <div className="hidden sm:flex" style={{ flexDirection: 'column' }}>
+          <div className="hidden-sm-down" style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
               {user.name}
             </span>
@@ -172,7 +172,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           }}
         >
           <LogOut style={{ width: '1rem', height: '1rem' }} />
-          <span className="hidden sm:inline">Logout</span>
+          <span className="hidden-sm-down">Logout</span>
         </button>
       </div>
     </header>
