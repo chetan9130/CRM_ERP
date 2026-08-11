@@ -11,8 +11,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Allowed origins: production frontend + local dev fallbacks
+// Strip trailing slash in case FRONTEND_URL was set with one (e.g. https://example.com/)
+const rawFrontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null;
 const allowedOrigins = [
-  process.env.FRONTEND_URL,   // e.g. https://crm-erp-sage.vercel.app
+  rawFrontendUrl,             // e.g. https://crm-erp-sage.vercel.app
   'http://localhost:5173',
   'http://localhost:5174',
 ].filter(Boolean);
@@ -38,9 +40,16 @@ app.use(cors(corsOptions));
 // Parse request bodies
 app.use(express.json());
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'CRM backend is running' });
+// Health check — also probes DB so you can verify connectivity from Render logs
+app.get('/api/health', async (req, res) => {
+  let dbStatus = 'unknown';
+  try {
+    await pool.query('SELECT 1');
+    dbStatus = 'connected';
+  } catch (e) {
+    dbStatus = 'error: ' + e.code;
+  }
+  res.json({ status: 'ok', message: 'CRM backend is running', database: dbStatus });
 });
 
 // Routes — auth at /auth, resources at /customers, /products, /challans
