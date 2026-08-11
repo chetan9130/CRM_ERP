@@ -238,3 +238,42 @@ button:disabled, .btn:disabled {
     display: none !important;
   }
 }
+
+/* Print format stylesheets for invoice / sales challan export */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  html, body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+  }
+  
+  aside, header {
+    display: none !important;
+  }
+  
+  main {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Expand main container to full screen by removing sidebar spacing */
+  div[style*="marginLeft"] {
+    margin-left: 0 !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 1.5rem !important;
+  }
+  
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+}

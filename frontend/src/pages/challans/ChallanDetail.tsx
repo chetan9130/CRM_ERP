@@ -13,7 +13,8 @@ import {
   Calendar,
   User,
   ShoppingBag,
-  Info
+  Info,
+  Printer
 } from 'lucide-react';
 
 export const ChallanDetail: React.FC = () => {
@@ -127,19 +128,36 @@ export const ChallanDetail: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       
       {/* Navigation header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="no-print" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link to="/challans" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
           <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
           Back to Challans List
         </Link>
 
-        {/* Form Actions depending on status */}
-        {canEdit && challan.status === 'draft' && (
-          <Link to={`/challans/${challan.id}/edit`} className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600 }}>
-            <Edit3 style={{ width: '1rem', height: '1rem' }} />
-            Edit Draft
-          </Link>
-        )}
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <button 
+            onClick={() => window.print()}
+            className="btn btn-secondary"
+            style={{ 
+              padding: '0.5rem 1rem', 
+              fontSize: '0.85rem', 
+              fontWeight: 600, 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '0.35rem',
+              cursor: 'pointer'
+            }}
+          >
+            <Printer style={{ width: '1rem', height: '1rem' }} />
+            Print Invoice
+          </button>
+          {canEdit && challan.status === 'draft' && (
+            <Link to={`/challans/${challan.id}/edit`} className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600 }}>
+              <Edit3 style={{ width: '1rem', height: '1rem' }} />
+              Edit Draft
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Main Info Card */}
@@ -170,7 +188,7 @@ export const ChallanDetail: React.FC = () => {
 
           {/* Core Action triggers */}
           {canEdit && (challan.status === 'draft' || challan.status === 'confirmed') && (
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div className="no-print" style={{ display: 'flex', gap: '0.75rem' }}>
               {challan.status === 'draft' && (
                 <button
                   onClick={handleConfirm}
