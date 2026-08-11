@@ -7,8 +7,7 @@ export const Login: React.FC = () => {
   const { login, token } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,14 +22,31 @@ export const Login: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    if (!email || !password) {
-      setError('Please fill in all fields.');
+    if (!selectedRole) {
+      setError('Please select a role to sign in.');
       return;
+    }
+
+    let targetEmail = '';
+    let targetPassword = '';
+
+    if (selectedRole === 'admin') {
+      targetEmail = 'admin@example.com';
+      targetPassword = 'admin123';
+    } else if (selectedRole === 'sales') {
+      targetEmail = 'sales@example.com';
+      targetPassword = 'sales123';
+    } else if (selectedRole === 'warehouse') {
+      targetEmail = 'warehouse@example.com';
+      targetPassword = 'warehouse123';
+    } else if (selectedRole === 'accounts') {
+      targetEmail = 'accounts@example.com';
+      targetPassword = 'accounts123';
     }
 
     setIsSubmitting(true);
     try {
-      await login(email, password);
+      await login(targetEmail, targetPassword);
       navigate('/dashboard', { replace: true });
     } catch (err: any) {
       console.error(err);
@@ -112,70 +128,24 @@ export const Login: React.FC = () => {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          {/* Quick Role Select (Autofill) */}
+          {/* Quick Role Select */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-              Quick Autofill Role (Demo)
+              Select Demo Account Role *
             </label>
             <select
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === 'admin') {
-                  setEmail('admin@example.com');
-                  setPassword('admin123');
-                } else if (val === 'sales') {
-                  setEmail('sales@example.com');
-                  setPassword('sales123');
-                } else if (val === 'warehouse') {
-                  setEmail('warehouse@example.com');
-                  setPassword('warehouse123');
-                } else if (val === 'accounts') {
-                  setEmail('accounts@example.com');
-                  setPassword('accounts123');
-                } else {
-                  setEmail('');
-                  setPassword('');
-                }
-              }}
-              defaultValue=""
-              style={{ height: '40px' }}
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              required
+              disabled={isSubmitting}
+              style={{ height: '42px', fontSize: '0.9rem' }}
             >
-              <option value="">-- Select Role to Autofill --</option>
+              <option value="">-- Choose Role --</option>
               <option value="admin">Administrator (admin@example.com)</option>
               <option value="sales">Sales Agent (sales@example.com)</option>
               <option value="warehouse">Warehouse Manager (warehouse@example.com)</option>
               <option value="accounts">Accounts Officer (accounts@example.com)</option>
             </select>
-          </div>
-
-          {/* Email input */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@example.com"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {/* Password input */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              disabled={isSubmitting}
-            />
           </div>
 
           {/* Submit Button */}
