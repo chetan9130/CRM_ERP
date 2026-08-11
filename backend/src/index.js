@@ -10,11 +10,24 @@ const { pool } = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Allowed origins: production frontend URL + local dev fallback
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:5174',
+].filter(Boolean);
+
 // Enable CORS
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Render health checks)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin '${origin}' not allowed`));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // Parse request bodies
@@ -26,9 +39,9 @@ app.use('/api/customers', customersRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/challans', challansRouter);
 
-// Base route for health checks
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Health check — exposed at /api/health for consistency
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'CRM backend is running' });
 });
 
 // Centralized error handler
@@ -40,9 +53,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start listening
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
+// Start listening — bind to 0.0.0.0 so Render can route traffic correctly
+app.listen(PORT, '0.0.0.0', async () => {
+  console.log(`CRM backend running on port ${PORT}`);
   try {
     const client = await pool.connect();
     console.log('Database connected successfully.');

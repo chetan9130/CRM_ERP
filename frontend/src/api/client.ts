@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -21,21 +21,35 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response Interceptor: handle token expiration (401 Unauthorized)
+// Response Interceptor: handle errors with useful categorization
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('crm_token');
-      localStorage.removeItem('crm_user');
-      
-      // Redirect to login if not already there
-      if (!window.location.pathname.endsWith('/login')) {
-        window.location.href = '/login';
+    if (error.response) {
+      const { status } = error.response;
+      if (status === 401) {
+        console.warn('[API] 401 Unauthorized — clearing session');
+        localStorage.removeItem('crm_token');
+        localStorage.removeItem('crm_user');
+        if (!window.location.pathname.endsWith('/login')) {
+          window.location.href = '/login';
+        }
+      } else if (status === 403) {
+        console.warn('[API] 403 Forbidden');
+      } else if (status === 404) {
+        console.error('[API] 404 Not Found:', error.config?.url);
+      } else if (status >= 500) {
+        console.error('[API] Server error:', status);
       }
+    } else if (error.request) {
+      // Request was made but no response received (network error / CORS)
+      console.error('[API] Network error — no response received. Check VITE_API_URL and backend CORS config.');
+    } else {
+      console.error('[API] Request setup error:', error.message);
     }
     return Promise.reject(error);
   }
 );
 
 export default apiClient;
+
