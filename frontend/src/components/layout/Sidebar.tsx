@@ -15,9 +15,18 @@ import {
 interface SidebarProps {
   collapsed: boolean;
   toggleCollapsed: () => void;
+  isMobile?: boolean;
+  mobileOpen?: boolean;
+  setMobileOpen?: (open: boolean) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  collapsed, 
+  toggleCollapsed,
+  isMobile = false,
+  mobileOpen = false,
+  setMobileOpen
+}) => {
   const { user } = useAuth();
   
   if (!user) return null;
@@ -52,9 +61,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
 
   const visibleLinks = allLinks.filter(link => link.roles.includes(user.role));
 
+  const sidebarWidth = collapsed ? '72px' : '260px';
+
   return (
     <aside style={{
-      width: collapsed ? '72px' : '260px',
+      width: isMobile ? '260px' : sidebarWidth,
       backgroundColor: 'var(--bg-sidebar)',
       borderRight: '1px solid var(--border-color)',
       display: 'flex',
@@ -63,8 +74,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
       position: 'fixed',
       left: 0,
       top: 0,
-      zIndex: 10,
-      transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+      zIndex: isMobile ? 50 : 10,
+      transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : 'none',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
     }}>
       {/* Brand Header */}
       <div style={{
@@ -72,12 +84,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
         borderBottom: '1px solid var(--border-color)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: collapsed ? 'center' : 'space-between',
-        padding: collapsed ? '0' : '0 1.25rem',
+        justifyContent: (collapsed && !isMobile) ? 'center' : 'space-between',
+        padding: (collapsed && !isMobile) ? '0' : '0 1.25rem',
         overflow: 'hidden',
         whiteSpace: 'nowrap'
       }}>
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
             <div style={{
               width: '2rem',
@@ -104,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
           </div>
         )}
         
-        {collapsed && (
+        {collapsed && !isMobile && (
           <div style={{
             width: '2rem',
             height: '2rem',
@@ -119,6 +131,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
           }}>
             E
           </div>
+        )}
+
+        {isMobile && (
+          <button
+            onClick={() => setMobileOpen && setMobileOpen(false)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--text-secondary)',
+              padding: '0.25rem',
+              borderRadius: 'var(--radius-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <ChevronLeft style={{ width: '1.25rem', height: '1.25rem' }} />
+          </button>
         )}
       </div>
 
@@ -138,12 +169,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
             <NavLink
               key={link.to}
               to={link.to}
-              title={collapsed ? link.label : undefined}
+              title={(collapsed && !isMobile) ? link.label : undefined}
+              onClick={() => isMobile && setMobileOpen && setMobileOpen(false)}
               style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: collapsed ? 'center' : 'flex-start',
-                gap: collapsed ? '0' : '0.75rem',
+                justifyContent: (collapsed && !isMobile) ? 'center' : 'flex-start',
+                gap: (collapsed && !isMobile) ? '0' : '0.75rem',
                 padding: '0.7rem 0.85rem',
                 borderRadius: 'var(--radius-md)',
                 color: isActive ? 'var(--primary)' : 'var(--text-secondary)',
@@ -155,47 +187,49 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleCollapsed }) 
               className={({ isActive }) => isActive ? 'nav-active' : ''}
             >
               <Icon style={{ width: '1.2rem', height: '1.2rem', flexShrink: 0 }} />
-              {!collapsed && <span style={{ fontSize: '0.85rem' }}>{link.label}</span>}
+              {(!collapsed || isMobile) && <span style={{ fontSize: '0.85rem' }}>{link.label}</span>}
             </NavLink>
           );
         })}
       </nav>
 
       {/* Collapse / Expand Toggle Button */}
-      <div style={{
-        padding: '0.75rem',
-        borderTop: '1px solid var(--border-color)',
-        display: 'flex',
-        justifyContent: 'center'
-      }}>
-        <button
-          onClick={toggleCollapsed}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-muted)',
-            cursor: 'pointer',
-            padding: '0.5rem',
-            borderRadius: 'var(--radius-sm)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'background 0.2s',
-            width: '100%'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-base)'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-        >
-          {collapsed ? (
-            <ChevronRight style={{ width: '1.2rem', height: '1.2rem' }} />
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ChevronLeft style={{ width: '1.2rem', height: '1.2rem' }} />
-              <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>Collapse</span>
-            </div>
-          )}
-        </button>
-      </div>
+      {!isMobile && (
+        <div style={{
+          padding: '0.75rem',
+          borderTop: '1px solid var(--border-color)',
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
+          <button
+            onClick={toggleCollapsed}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              padding: '0.5rem',
+              borderRadius: 'var(--radius-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'background 0.2s',
+              width: '100%'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-base)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            {collapsed ? (
+              <ChevronRight style={{ width: '1.2rem', height: '1.2rem' }} />
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <ChevronLeft style={{ width: '1.2rem', height: '1.2rem' }} />
+                <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>Collapse</span>
+              </div>
+            )}
+          </button>
+        </div>
+      )}
     </aside>
   );
 };

@@ -1,33 +1,39 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from 'react-router-dom';
-import { Bell, HelpCircle, LogOut } from 'lucide-react';
+import { Bell, HelpCircle, LogOut, Menu } from 'lucide-react';
 
 interface TopbarProps {
   sidebarWidth: string;
+  isMobile?: boolean;
+  toggleMobileOpen?: () => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ sidebarWidth }) => {
+export const Topbar: React.FC<TopbarProps> = ({ 
+  sidebarWidth,
+  isMobile = false,
+  toggleMobileOpen
+}) => {
   const { user, logout } = useAuth();
   const location = useLocation();
 
   // Translate paths to readable page titles
   const getPageTitle = () => {
     const path = location.pathname;
-    if (path.startsWith('/dashboard')) return 'Dashboard Overview';
+    if (path.startsWith('/dashboard')) return 'Dashboard';
     if (path.startsWith('/customers')) {
       if (path.includes('/new')) return 'Register Customer';
       if (path.includes('/edit')) return 'Edit Customer';
-      return 'Customer Directory';
+      return 'Customers';
     }
     if (path.startsWith('/products')) {
-      if (path.includes('/new')) return 'Add New Product';
+      if (path.includes('/new')) return 'Add Product';
       if (path.includes('/edit')) return 'Edit Product';
-      return 'Product Inventory';
+      return 'Inventory';
     }
     if (path.startsWith('/challans')) {
-      if (path.includes('/new')) return 'Generate Sales Challan';
-      if (path.includes('/edit')) return 'Edit Draft Challan';
+      if (path.includes('/new')) return 'New Challan';
+      if (path.includes('/edit')) return 'Edit Challan';
       return 'Sales Challans';
     }
     return 'Portal';
@@ -45,36 +51,59 @@ export const Topbar: React.FC<TopbarProps> = ({ sidebarWidth }) => {
   if (!user) return null;
 
   return (
-    <header style={{
-      height: '70px',
-      backgroundColor: 'var(--bg-surface)',
-      borderBottom: '1px solid var(--border-color)',
-      padding: '0 2rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      position: 'fixed',
-      top: 0,
-      right: 0,
-      left: sidebarWidth,
-      zIndex: 9,
-      transition: 'left 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-    }}>
-      {/* Title / Breadcrumb */}
-      <div>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Operations Portal
-        </span>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: 0, color: 'var(--text-primary)', marginTop: '-0.15rem' }}>
-          {getPageTitle()}
-        </h2>
+    <header 
+      className="px-4 sm:px-8"
+      style={{
+        height: '70px',
+        backgroundColor: 'var(--bg-surface)',
+        borderBottom: '1px solid var(--border-color)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        left: sidebarWidth,
+        zIndex: 9,
+        transition: 'left 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
+    >
+      {/* Title / Breadcrumb + Hamburger */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {isMobile && (
+          <button
+            onClick={toggleMobileOpen}
+            aria-label="Open navigation menu"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              padding: '0.4rem',
+              borderRadius: 'var(--radius-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Menu style={{ width: '1.25rem', height: '1.25rem' }} />
+          </button>
+        )}
+        <div>
+          <span className="hidden sm:inline" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Operations Portal
+          </span>
+          <h2 style={{ fontSize: isMobile ? '1.05rem' : '1.2rem', fontWeight: 700, marginBottom: 0, color: 'var(--text-primary)', marginTop: isMobile ? '0' : '-0.15rem' }}>
+            {getPageTitle()}
+          </h2>
+        </div>
       </div>
 
       {/* Right-side Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.75rem' : '1.5rem' }}>
         
         {/* Placeholder system action buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
+        <div className="hidden md:flex" style={{ alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)' }}>
           <button style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: '0.35rem', borderRadius: '50%' }} title="Help">
             <HelpCircle style={{ width: '1.2rem', height: '1.2rem' }} />
           </button>
@@ -89,7 +118,7 @@ export const Topbar: React.FC<TopbarProps> = ({ sidebarWidth }) => {
           alignItems: 'center', 
           gap: '0.75rem', 
           borderLeft: '1px solid var(--border-color)', 
-          paddingLeft: '1.5rem' 
+          paddingLeft: isMobile ? '0.75rem' : '1.5rem' 
         }}>
           {/* Initials Avatar */}
           <div style={{
@@ -107,7 +136,7 @@ export const Topbar: React.FC<TopbarProps> = ({ sidebarWidth }) => {
             {getInitials(user.name)}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="hidden sm:flex" style={{ flexDirection: 'column' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
               {user.name}
             </span>
@@ -124,13 +153,16 @@ export const Topbar: React.FC<TopbarProps> = ({ sidebarWidth }) => {
           onClick={logout}
           className="btn btn-secondary"
           style={{
-            padding: '0.5rem 0.75rem',
+            padding: isMobile ? '0.5rem' : '0.5rem 0.75rem',
             fontSize: '0.8rem',
             borderRadius: 'var(--radius-md)',
             color: 'var(--error)',
             fontWeight: 600,
             border: '1px solid #fecaca',
-            backgroundColor: '#fef2f2'
+            backgroundColor: '#fef2f2',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#fee2e2';
@@ -140,7 +172,7 @@ export const Topbar: React.FC<TopbarProps> = ({ sidebarWidth }) => {
           }}
         >
           <LogOut style={{ width: '1rem', height: '1rem' }} />
-          Logout
+          <span className="hidden sm:inline">Logout</span>
         </button>
       </div>
     </header>

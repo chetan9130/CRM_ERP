@@ -338,157 +338,161 @@ export const ChallanForm: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>Line Items</h3>
 
-            {/* Headers row */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(200px, 2fr) 110px 100px 100px 40px',
-              gap: '1rem',
-              alignItems: 'center',
-              paddingBottom: '0.5rem',
-              borderBottom: '1px solid var(--border-color)',
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              fontWeight: 700
-            }}>
-              <span>Product Select</span>
-              <span style={{ textAlign: 'right' }}>Quantity</span>
-              <span style={{ textAlign: 'right' }}>Unit Price</span>
-              <span style={{ textAlign: 'right' }}>Subtotal</span>
-              <span></span>
-            </div>
-
-            {/* Row items mapping */}
-            {items.map((item, index) => {
-              const subtotal = (item.unit_price || 0) * (item.quantity || 0);
-              const rowErr = inlineErrors[item.product_id];
-              const formErr = formErrors[`item_${index}`];
-
-              return (
-                <div key={index} style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.35rem',
-                  paddingBottom: '0.75rem',
-                  borderBottom: '1px solid var(--border-color)'
+            <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ minWidth: '650px', display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '0.5rem' }}>
+                {/* Headers row */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(200px, 2fr) 110px 100px 100px 40px',
+                  gap: '1rem',
+                  alignItems: 'center',
+                  paddingBottom: '0.5rem',
+                  borderBottom: '1px solid var(--border-color)',
+                  fontSize: '0.75rem',
+                  color: 'var(--text-muted)',
+                  fontWeight: 700
                 }}>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'minmax(200px, 2fr) 110px 100px 100px 40px',
-                    gap: '1rem',
-                    alignItems: 'center'
-                  }}>
-                    {/* Product select */}
-                    <div>
-                      <select
-                        value={item.product_id}
-                        onChange={(e) => handleProductChange(index, e.target.value)}
-                        required
-                      >
-                        <option value="">-- Choose Product --</option>
-                        {products.map((p) => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} ({p.sku}) - Stock: {p.current_stock}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Quantity input */}
-                    <div>
-                      <input
-                        type="number"
-                        min={1}
-                        value={item.quantity}
-                        onChange={(e) => handleQuantityChange(index, parseInt(e.target.value) || 1)}
-                        required
-                        style={{ textAlign: 'right' }}
-                      />
-                    </div>
-
-                    {/* Unit price snapshot */}
-                    <div style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                      {item.unit_price ? `₹${item.unit_price.toFixed(2)}` : '₹0.00'}
-                    </div>
-
-                    {/* Subtotal computed */}
-                    <div style={{ textAlign: 'right', fontWeight: 700, color: 'var(--text-primary)' }}>
-                      ₹{subtotal.toFixed(2)}
-                    </div>
-
-                    {/* Delete button */}
-                    <div>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => removeLineItem(index)}
-                        style={{
-                          padding: '0.4rem',
-                          color: 'var(--error)',
-                          border: 'none',
-                          background: 'transparent',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <Trash2 style={{ width: '1.1rem', height: '1.1rem' }} />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Stock indicators and inline errors */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 0.25rem', fontSize: '0.75rem' }}>
-                    {/* Stock indicator */}
-                    {item.product_id && (
-                      <span style={{
-                        color: (item.available_stock || 0) < item.quantity ? 'var(--error)' : 'var(--success)',
-                        fontWeight: 600
-                      }}>
-                        Available Stock: {item.available_stock || 0} units
-                      </span>
-                    )}
-
-                    {/* Row duplicate validator checks */}
-                    {formErr && (
-                      <span style={{ color: 'var(--error)', fontWeight: 600, marginLeft: 'auto' }}>{formErr}</span>
-                    )}
-
-                    {/* Transaction stock error returned from confirm */}
-                    {rowErr && (
-                      <span style={{
-                        color: 'var(--error)',
-                        fontWeight: 700,
-                        backgroundColor: 'var(--error-bg)',
-                        padding: '0.15rem 0.5rem',
-                        borderRadius: 'var(--radius-sm)',
-                        border: '1px solid rgba(239, 68, 68, 0.15)',
-                        marginLeft: 'auto'
-                      }}>
-                        {rowErr}
-                      </span>
-                    )}
-                  </div>
+                  <span>Product Select</span>
+                  <span style={{ textAlign: 'right' }}>Quantity</span>
+                  <span style={{ textAlign: 'right' }}>Unit Price</span>
+                  <span style={{ textAlign: 'right' }}>Subtotal</span>
+                  <span></span>
                 </div>
-              );
-            })}
 
-            {/* Add row button */}
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={addLineItem}
-              style={{
-                alignSelf: 'flex-start',
-                padding: '0.4rem 1rem',
-                fontSize: '0.8rem',
-                marginTop: '0.5rem',
-                fontWeight: 600
-              }}
-            >
-              <Plus style={{ width: '1rem', height: '1rem' }} />
-              Add Product Line
-            </button>
+                {/* Row items mapping */}
+                {items.map((item, index) => {
+                  const subtotal = (item.unit_price || 0) * (item.quantity || 0);
+                  const rowErr = inlineErrors[item.product_id];
+                  const formErr = formErrors[`item_${index}`];
+
+                  return (
+                    <div key={index} style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.35rem',
+                      paddingBottom: '0.75rem',
+                      borderBottom: '1px solid var(--border-color)'
+                    }}>
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'minmax(200px, 2fr) 110px 100px 100px 40px',
+                        gap: '1rem',
+                        alignItems: 'center'
+                      }}>
+                        {/* Product select */}
+                        <div>
+                          <select
+                            value={item.product_id}
+                            onChange={(e) => handleProductChange(index, e.target.value)}
+                            required
+                          >
+                            <option value="">-- Choose Product --</option>
+                            {products.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name} ({p.sku}) - Stock: {p.current_stock}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Quantity input */}
+                        <div>
+                          <input
+                            type="number"
+                            min={1}
+                            value={item.quantity}
+                            onChange={(e) => handleQuantityChange(index, parseInt(e.target.value) || 1)}
+                            required
+                            style={{ textAlign: 'right' }}
+                          />
+                        </div>
+
+                        {/* Unit price snapshot */}
+                        <div style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                          {item.unit_price ? `₹${item.unit_price.toFixed(2)}` : '₹0.00'}
+                        </div>
+
+                        {/* Subtotal computed */}
+                        <div style={{ textAlign: 'right', fontWeight: 700, color: 'var(--text-primary)' }}>
+                          ₹{subtotal.toFixed(2)}
+                        </div>
+
+                        {/* Delete button */}
+                        <div>
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => removeLineItem(index)}
+                            style={{
+                              padding: '0.4rem',
+                              color: 'var(--error)',
+                              border: 'none',
+                              background: 'transparent',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <Trash2 style={{ width: '1.1rem', height: '1.1rem' }} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Stock indicators and inline errors */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 0.25rem', fontSize: '0.75rem' }}>
+                        {/* Stock indicator */}
+                        {item.product_id && (
+                          <span style={{
+                            color: (item.available_stock || 0) < item.quantity ? 'var(--error)' : 'var(--success)',
+                            fontWeight: 600
+                          }}>
+                            Available Stock: {item.available_stock || 0} units
+                          </span>
+                        )}
+
+                        {/* Row duplicate validator checks */}
+                        {formErr && (
+                          <span style={{ color: 'var(--error)', fontWeight: 600, marginLeft: 'auto' }}>{formErr}</span>
+                        )}
+
+                        {/* Transaction stock error returned from confirm */}
+                        {rowErr && (
+                          <span style={{
+                            color: 'var(--error)',
+                            fontWeight: 700,
+                            backgroundColor: 'var(--error-bg)',
+                            padding: '0.15rem 0.5rem',
+                            borderRadius: 'var(--radius-sm)',
+                            border: '1px solid rgba(239, 68, 68, 0.15)',
+                            marginLeft: 'auto'
+                          }}>
+                            {rowErr}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Add row button */}
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={addLineItem}
+                  style={{
+                    alignSelf: 'flex-start',
+                    padding: '0.4rem 1rem',
+                    fontSize: '0.8rem',
+                    marginTop: '0.5rem',
+                    fontWeight: 600
+                  }}
+                >
+                  <Plus style={{ width: '1rem', height: '1rem' }} />
+                  Add Product Line
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Totals Summary Footer */}

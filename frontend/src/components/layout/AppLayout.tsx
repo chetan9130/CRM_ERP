@@ -5,10 +5,20 @@ import { Topbar } from './Topbar';
 
 export const AppLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
     const isCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
     setCollapsed(isCollapsed);
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const toggleCollapsed = () => {
@@ -18,12 +28,42 @@ export const AppLayout: React.FC = () => {
     });
   };
 
-  const sidebarWidth = collapsed ? '72px' : '260px';
+  const toggleMobileOpen = () => {
+    setMobileOpen(prev => !prev);
+  };
+
+  // Prevent background scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobile && mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen, isMobile]);
+
+  const sidebarWidth = isMobile ? '0px' : (collapsed ? '72px' : '260px');
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', backgroundColor: 'var(--bg-base)' }}>
+      {/* Backdrop for mobile drawer */}
+      {isMobile && mobileOpen && (
+        <div 
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+        />
+      )}
+
       {/* Fixed Sidebar */}
-      <Sidebar collapsed={collapsed} toggleCollapsed={toggleCollapsed} />
+      <Sidebar 
+        collapsed={collapsed} 
+        toggleCollapsed={toggleCollapsed} 
+        isMobile={isMobile}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
 
       {/* Main Container */}
       <div style={{
@@ -35,18 +75,24 @@ export const AppLayout: React.FC = () => {
         transition: 'margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         {/* Fixed Topbar */}
-        <Topbar sidebarWidth={sidebarWidth} />
+        <Topbar 
+          sidebarWidth={sidebarWidth} 
+          isMobile={isMobile}
+          toggleMobileOpen={toggleMobileOpen}
+        />
 
         {/* Content Area */}
-        <main style={{
-          flex: 1,
-          padding: '2.25rem 2rem',
-          marginTop: '70px', // Offset Topbar height
-          width: '100%',
-          maxWidth: '1440px',
-          marginRight: 'auto',
-          marginLeft: 'auto'
-        }}>
+        <main 
+          className="px-4 py-6 sm:px-6 lg:px-8"
+          style={{
+            flex: 1,
+            marginTop: '70px', // Offset Topbar height
+            width: '100%',
+            maxWidth: '1440px',
+            marginRight: 'auto',
+            marginLeft: 'auto'
+          }}
+        >
           <Outlet />
         </main>
       </div>
