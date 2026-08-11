@@ -40,6 +40,14 @@ app.use(cors(corsOptions));
 // Parse request bodies
 app.use(express.json());
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'CRM Backend API is running'
+  });
+});
+
 // Health check — also probes DB so you can verify connectivity from Render logs
 app.get('/api/health', async (req, res) => {
   let dbStatus = 'unknown';
