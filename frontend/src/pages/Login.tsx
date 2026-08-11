@@ -112,6 +112,42 @@ export const Login: React.FC = () => {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          {/* Quick Role Select (Autofill) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+              Quick Autofill Role (Demo)
+            </label>
+            <select
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === 'admin') {
+                  setEmail('admin@example.com');
+                  setPassword('admin123');
+                } else if (val === 'sales') {
+                  setEmail('sales@example.com');
+                  setPassword('sales123');
+                } else if (val === 'warehouse') {
+                  setEmail('warehouse@example.com');
+                  setPassword('warehouse123');
+                } else if (val === 'accounts') {
+                  setEmail('accounts@example.com');
+                  setPassword('accounts123');
+                } else {
+                  setEmail('');
+                  setPassword('');
+                }
+              }}
+              defaultValue=""
+              style={{ height: '40px' }}
+            >
+              <option value="">-- Select Role to Autofill --</option>
+              <option value="admin">Administrator (admin@example.com)</option>
+              <option value="sales">Sales Agent (sales@example.com)</option>
+              <option value="warehouse">Warehouse Manager (warehouse@example.com)</option>
+              <option value="accounts">Accounts Officer (accounts@example.com)</option>
+            </select>
+          </div>
+
           {/* Email input */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
