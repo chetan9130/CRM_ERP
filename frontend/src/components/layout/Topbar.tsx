@@ -120,21 +120,23 @@ export const Topbar: React.FC<TopbarProps> = ({
           borderLeft: '1px solid var(--border-color)', 
           paddingLeft: isMobile ? '0.75rem' : '1.5rem' 
         }}>
-          {/* Initials Avatar */}
-          <div style={{
-            width: '2.3rem',
-            height: '2.3rem',
-            borderRadius: '50%',
-            backgroundColor: 'var(--bg-active-link)',
-            color: 'var(--primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 700,
-            fontSize: '0.85rem'
-          }}>
-            {getInitials(user.name)}
-          </div>
+          {/* User Avatar */}
+          <img
+            src="/userimg.jpg"
+            alt={user.name}
+            style={{
+              width: '2.3rem',
+              height: '2.3rem',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '2px solid var(--border-color)',
+              flexShrink: 0
+            }}
+            onError={(e) => {
+              // fallback: hide img and show initials sibling
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
+          />
 
           <div className="hidden-sm-down" style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>

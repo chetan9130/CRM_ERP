@@ -74,22 +74,17 @@ export const Login: React.FC = () => {
       }}>
         {/* Brand Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '3rem',
-            height: '3rem',
-            borderRadius: '10px',
-            backgroundColor: 'var(--primary)',
-            color: '#fff',
-            fontWeight: 800,
-            fontSize: '1.25rem',
-            marginBottom: '0.75rem',
-            boxShadow: 'var(--shadow-glow)'
-          }}>
-            E
-          </div>
+          <img
+            src="/login_img.png"
+            alt="CRM ERP Logo"
+            style={{
+              width: '72px',
+              height: '72px',
+              objectFit: 'contain',
+              marginBottom: '0.75rem',
+              borderRadius: '12px'
+            }}
+          />
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
             Welcome Back
           </h1>
