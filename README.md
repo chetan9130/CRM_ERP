@@ -1,153 +1,624 @@
-# CRM-ERP
+# CRM ERP System
 
-A modern **Customer Relationship Management (CRM) and Enterprise Resource Planning (ERP)** system built with a React frontend and Node.js/Express backend. The platform provides centralized management for customers, products, challans, authentication, and business operations.
+A modern, full-stack **Customer Relationship Management (CRM) and Enterprise Resource Planning (ERP)** web application designed to manage users, customers, business operations, and CRM data through a secure and responsive interface.
 
----
-
-## 🚀 Features
-
-### 🔐 Authentication & Authorization
-
-* User registration and login
-* Secure password hashing
-* JWT-based authentication
-* Protected API routes
-* Role-based access control
-* Persistent frontend authentication state
-
-### 👥 Customer Management
-
-* Create customers
-* View customer list
-* Update customer information
-* Delete customers
-* View customer details
-* Customer validation
-
-### 📦 Product Management
-
-* Add products
-* View products
-* Update product information
-* Delete products
-* Product validation
-* Product inventory-related information
-
-### 🧾 Challan Management
-
-* Create challans
-* View challan list
-* View challan details
-* Update challans
-* Manage customer/product information associated with challans
-* Challan validation
-
-### 📊 Dashboard
-
-* Centralized business dashboard
-* Quick access to CRM modules
-* Navigation through customers, products and challans
-* Protected dashboard routes
-
-### 🎨 Modern Frontend
-
-* React + TypeScript
-* Vite
-* Responsive layout
-* Reusable components
-* Protected routes
-* Role-based routes
-* API service layer
-* Modern sidebar and topbar navigation
+The project follows a **three-tier architecture** with a React frontend, Node.js/Express backend, and PostgreSQL database.
 
 ---
 
-## 🏗️ Project Architecture
+## 📌 Project Overview
 
-The project follows a monorepo structure:
+The CRM ERP system provides a centralized platform for managing customer and business-related information.
+
+The application is designed with a responsive user interface and supports desktop, tablet, and mobile devices.
+
+### Main Features
+
+* 🔐 User registration and login
+* 🔑 JWT-based authentication
+* 🔒 Password hashing using bcrypt
+* 👥 User management
+* 👤 Customer management
+* 📊 Dashboard and statistics
+* 🔎 Search and filtering
+* 📝 Forms and CRUD operations
+* 📱 Fully responsive interface
+* 🌐 RESTful API
+* 🗄️ PostgreSQL database
+* 🔄 Database migrations
+* 🌱 Database seed scripts
+* ❤️ Backend health monitoring
+* 🛡️ CORS protection
+* ☁️ Cloud deployment
+* ⚙️ Environment-based configuration
+
+---
+
+# 🔐 CRM Demo Credentials
+
+The following demo accounts can be used to test the different CRM roles.
+
+> **Note:** Passwords are stored securely in the database using bcrypt hashing. The passwords below are demo credentials for testing and are not the stored password hashes.
+
+| Role | Email | Demo Password |
+|---|---|---|
+| **Admin** | `admin@example.com` | `admin123` |
+| **Sales Agent** | `sales@example.com` | `sales123` |
+| **Warehouse Manager** | `warehouse@example.com` | `warehouse123` |
+| **Accounts Officer** | `accounts@example.com` | `accounts123` |
+
+### Admin
 
 ```text
-CRM_ERP/
+Email: admin@example.com
+Password: admin123
+Role: admin
+
+Email: sales@example.com
+Password: sales123
+Role: sales
+
+Email: warehouse@example.com
+Password: warehouse123
+Role: warehouse
+
+Email: accounts@example.com
+Password: accounts123
+Role: accounts
+
+
+**Important:** I used the passwords `admin123`, `sales123`, `warehouse123`, and `accounts123` as the demo credentials. Make sure these match the passwords actually created by your `seed.js`; the bcrypt hashes alone cannot tell us the original plaintext passwords. 
+
+# 🏗️ System Architecture
+
+The system follows a **three-tier architecture**:
+
+1. Presentation Layer
+2. Application Layer
+3. Data Layer
+
+```text
+                         ┌──────────────────────┐
+                         │         USER         │
+                         │ Desktop / Tablet /   │
+                         │       Mobile        │
+                         └──────────┬───────────┘
+                                    │
+                                  HTTPS
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────┐
+│                  PRESENTATION LAYER                      │
+│                         VERCEL                           │
+│                                                          │
+│  React       TypeScript       Vite       Tailwind CSS    │
+│                                                          │
+│  ┌────────┬────────┬─────────┬────────┬───────────────┐ │
+│  │ Login  │Dashboard│ Users  │Customers│ Settings      │ │
+│  ├────────┼────────┼─────────┼────────┼───────────────┤ │
+│  │Sidebar │ Forms  │ Tables │ Charts │ Search/Filters │ │
+│  └────────┴────────┴─────────┴────────┴───────────────┘ │
+│                                                          │
+│                         Axios                            │
+└──────────────────────────┬───────────────────────────────┘
+                           │
+                        REST API
+                          HTTPS
+                           │
+                           ▼
+┌──────────────────────────────────────────────────────────┐
+│                   APPLICATION LAYER                      │
+│                         RENDER                           │
+│                                                          │
+│                  Node.js + Express.js                    │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │                    Middleware                      │  │
+│  │                                                    │  │
+│  │  CORS │ JSON Parser │ JWT │ Validation │ Errors  │  │
+│  └─────────────────────────┬──────────────────────────┘  │
+│                            │                             │
+│                    API Routes                           │
+│                            │                             │
+│      ┌────────────┬────────┼───────────┬─────────────┐ │
+│      │            │        │           │             │ │
+│      ▼            ▼        ▼           ▼             ▼ │
+│    Auth         Users   Customers   Dashboard      Health│
+│      │            │        │           │             │ │
+│      └────────────┴────────┼───────────┴─────────────┘ │
+│                            │                             │
+│                     Business Logic                       │
+│                            │                             │
+│                     JWT + bcrypt                         │
+└────────────────────────────┬─────────────────────────────┘
+                             │
+                            SQL
+                             │
+                             ▼
+┌──────────────────────────────────────────────────────────┐
+│                     DATA LAYER                           │
+│                    POSTGRESQL                            │
+│                                                          │
+│        ┌─────────┐  ┌────────────┐  ┌───────────────┐   │
+│        │  Users  │  │ Customers  │  │  CRM Data     │   │
+│        └─────────┘  └────────────┘  └───────────────┘   │
+│                                                          │
+│             Migrations + Seed Scripts                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 🔄 Application Data Flow
+
+The complete request flow is:
+
+```text
+User
+  ↓
+React UI
+  ↓
+Axios
+  ↓
+REST API
+  ↓
+Express Router
+  ↓
+Middleware
+  ↓
+Authentication / Validation
+  ↓
+Business Logic
+  ↓
+PostgreSQL
+  ↓
+API Response
+  ↓
+React State
+  ↓
+Updated UI
+```
+
+---
+
+# 🖥️ Frontend Architecture
+
+The frontend is developed using:
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Axios
+* Lucide React
+
+## Frontend Components
+
+The frontend contains reusable components such as:
+
+### Navigation
+
+* Responsive sidebar
+* Navbar/header
+* Mobile navigation drawer
+* Profile menu
+* Navigation links
+
+### Authentication
+
+* Login page
+* Registration page
+* Authentication forms
+* Protected routes
+
+### Dashboard
+
+* Statistics cards
+* Charts
+* Activity information
+* Summary panels
+
+### Customer Management
+
+* Customer list
+* Customer creation form
+* Customer editing
+* Customer details
+* Customer deletion
+* Search
+* Filtering
+* Pagination
+
+### User Management
+
+* User list
+* User creation
+* User editing
+* User deletion
+* Role management
+
+### UI Components
+
+* Buttons
+* Inputs
+* Select fields
+* Tables
+* Cards
+* Dialogs
+* Modals
+* Dropdowns
+* Alerts
+* Loading states
+* Empty states
+* Error states
+
+---
+
+# 📱 Responsive Design
+
+The frontend is designed to work across:
+
+```text
+Mobile
+   ↓
+Tablet
+   ↓
+Laptop
+   ↓
+Desktop
+   ↓
+Large Desktop
+```
+
+Responsive behavior includes:
+
+* Mobile navigation drawer
+* Responsive dashboard cards
+* Responsive tables
+* Responsive forms
+* Responsive modals
+* Responsive charts
+* Flexible layouts
+* Mobile-friendly buttons
+* Touch-friendly controls
+
+Tailwind CSS responsive breakpoints are used to adapt the UI.
+
+---
+
+# ⚙️ Backend Architecture
+
+The backend is built using:
+
+* Node.js
+* Express.js
+* JWT
+* bcrypt/bcryptjs
+* CORS
+* Zod
+* PostgreSQL
+
+The backend is responsible for:
+
+* API routing
+* Authentication
+* Authorization
+* Validation
+* Business logic
+* Database communication
+* Error handling
+* CORS
+* Health monitoring
+
+---
+
+# 🧩 Backend Components
+
+```text
+Express Application
+       │
+       ├── Middleware
+       │    ├── CORS
+       │    ├── JSON Parser
+       │    ├── JWT Authentication
+       │    ├── Validation
+       │    └── Error Handling
+       │
+       ├── Routes
+       │    ├── Authentication
+       │    ├── Users
+       │    ├── Customers
+       │    ├── Dashboard
+       │    └── Health
+       │
+       ├── Business Logic
+       │
+       └── Database Layer
+            └── PostgreSQL
+```
+
+---
+
+# 🔐 Authentication Architecture
+
+The system uses **JWT-based authentication**.
+
+### Login Flow
+
+```text
+User
+ ↓
+Email + Password
+ ↓
+POST /auth/login
+ ↓
+Express API
+ ↓
+Validate Input
+ ↓
+Find User in PostgreSQL
+ ↓
+bcrypt Password Verification
+ ↓
+Generate JWT
+ ↓
+Return Token
+ ↓
+Frontend
+```
+
+Protected APIs use:
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+# 🔒 Password Security
+
+Passwords are never stored as plain text.
+
+During registration:
+
+```text
+Password
+   ↓
+bcrypt
+   ↓
+Password Hash
+   ↓
+PostgreSQL
+```
+
+During login:
+
+```text
+Entered Password
+       ↓
+bcrypt.compare()
+       ↓
+Stored Password Hash
+       ↓
+Valid / Invalid
+```
+
+---
+
+# 🗄️ Database Architecture
+
+The application uses **PostgreSQL** as the relational database.
+
+The database stores:
+
+* Users
+* Customers
+* CRM information
+* Application records
+* Related business data
+
+Database communication is handled through a PostgreSQL connection pool.
+
+---
+
+# 🔄 Database Migration
+
+Database structure is managed using SQL migrations.
+
+Example:
+
+```text
+backend/
+├── migrations/
+│   └── 001_init.sql
+│
+└── scripts/
+    ├── migrate.js
+    └── seed.js
+```
+
+Run migration:
+
+```bash
+node scripts/migrate.js
+```
+
+Run seed:
+
+```bash
+node scripts/seed.js
+```
+
+---
+
+# 🌐 API Architecture
+
+The frontend communicates with the backend using REST APIs.
+
+## Authentication
+
+| Method | Endpoint         | Description   |
+| ------ | ---------------- | ------------- |
+| POST   | `/auth/register` | Register user |
+| POST   | `/auth/login`    | Login user    |
+
+## Users
+
+| Method | Endpoint     | Description   |
+| ------ | ------------ | ------------- |
+| GET    | `/users`     | Get all users |
+| GET    | `/users/:id` | Get user      |
+| PUT    | `/users/:id` | Update user   |
+| DELETE | `/users/:id` | Delete user   |
+
+## Customers
+
+| Method | Endpoint         | Description     |
+| ------ | ---------------- | --------------- |
+| GET    | `/customers`     | Get customers   |
+| GET    | `/customers/:id` | Get customer    |
+| POST   | `/customers`     | Create customer |
+| PUT    | `/customers/:id` | Update customer |
+| DELETE | `/customers/:id` | Delete customer |
+
+## System
+
+| Method | Endpoint      | Description                 |
+| ------ | ------------- | --------------------------- |
+| GET    | `/`           | Backend status              |
+| GET    | `/api/health` | Backend and database health |
+
+---
+
+# ❤️ Health Monitoring
+
+The backend provides a health endpoint:
+
+```http
+GET /api/health
+```
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "message": "CRM backend is running",
+  "database": "connected"
+}
+```
+
+The root endpoint provides:
+
+```http
+GET /
+```
+
+Example:
+
+```json
+{
+  "status": "ok",
+  "message": "CRM Backend API is running"
+}
+```
+
+---
+
+# 🔐 Environment Configuration
+
+Sensitive configuration is managed through environment variables.
+
+## Frontend
+
+Local:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Production:
+
+```env
+VITE_API_URL=https://crm-erp-uo8j.onrender.com
+```
+
+## Backend
+
+```env
+PORT=5000
+DATABASE_URL=your_postgresql_connection_string
+JWT_SECRET=your_secure_jwt_secret
+FRONTEND_URL=http://localhost:5173
+```
+
+Production:
+
+```env
+DATABASE_URL=your_production_database_url
+JWT_SECRET=your_production_jwt_secret
+FRONTEND_URL=https://crm-erp-sage.vercel.app
+```
+
+Never commit environment files containing secrets.
+
+---
+
+# 🌍 CORS
+
+Because the frontend and backend are hosted separately, CORS is configured on the Express server.
+
+Development:
+
+```text
+http://localhost:5173
+```
+
+Production:
+
+```text
+https://crm-erp-sage.vercel.app
+```
+
+The production frontend URL should not contain a trailing slash.
+
+---
+
+# 📁 Project Structure
+
+```text
+CRM/
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   └── ...
+│   │
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── ...
 │
 ├── backend/
-│   ├── database/
-│   │   ├── schema.sql
-│   │   └── seed.sql
+│   ├── src/
+│   │   ├── config/
+│   │   ├── routes/
+│   │   ├── middleware/
+│   │   └── ...
 │   │
 │   ├── migrations/
 │   │   └── 001_init.sql
 │   │
 │   ├── scripts/
-│   │   ├── init-db.js
 │   │   ├── migrate.js
 │   │   └── seed.js
 │   │
-│   ├── src/
-│   │   ├── config/
-│   │   │   └── db.js
-│   │   │
-│   │   ├── middleware/
-│   │   │   └── auth.js
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── auth.js
-│   │   │   ├── challans.js
-│   │   │   ├── customers.js
-│   │   │   └── products.js
-│   │   │
-│   │   ├── validators/
-│   │   │   ├── challan.js
-│   │   │   ├── customer.js
-│   │   │   └── product.js
-│   │   │
-│   │   └── index.js
-│   │
-│   ├── .env.example
 │   ├── package.json
-│   └── package-lock.json
-│
-├── frontend/
-│   ├── public/
-│   │
-│   ├── src/
-│   │   ├── api/
-│   │   │   ├── auth.ts
-│   │   │   ├── challans.ts
-│   │   │   ├── client.ts
-│   │   │   ├── customers.ts
-│   │   │   └── products.ts
-│   │   │
-│   │   ├── components/
-│   │   │   └── layout/
-│   │   │       ├── AppLayout.tsx
-│   │   │       ├── Sidebar.tsx
-│   │   │       └── Topbar.tsx
-│   │   │
-│   │   ├── context/
-│   │   │   └── AuthContext.tsx
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── challans/
-│   │   │   ├── customers/
-│   │   │   ├── products/
-│   │   │   ├── Dashboard.tsx
-│   │   │   └── Login.tsx
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── ProtectedRoute.tsx
-│   │   │   ├── RoleRoute.tsx
-│   │   │   └── router.tsx
-│   │   │
-│   │   ├── types/
-│   │   │   └── index.ts
-│   │   │
-│   │   ├── App.tsx
-│   │   ├── App.css
-│   │   └── main.tsx
-│   │
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
+│   └── ...
 │
 ├── .gitignore
 └── README.md
@@ -155,51 +626,18 @@ CRM_ERP/
 
 ---
 
-## 🛠️ Tech Stack
+# 🚀 Installation and Setup
 
-### Frontend
+## Requirements
 
-| Technology      | Purpose                   |
-| --------------- | ------------------------- |
-| React           | UI development            |
-| TypeScript      | Type safety               |
-| Vite            | Development/build tooling |
-| React Router    | Application routing       |
-| CSS             | Styling                   |
-| Fetch/API layer | Backend communication     |
-
-### Backend
-
-| Technology | Purpose             |
-| ---------- | ------------------- |
-| Node.js    | Runtime             |
-| Express.js | REST API            |
-| PostgreSQL | Relational database |
-| `pg`       | PostgreSQL client   |
-| JWT        | Authentication      |
-| bcrypt     | Password hashing    |
-
-### Development Tools
-
-* Git
-* GitHub
-* VS Code
-* pgAdmin
-* Postman / API testing tools
-
----
-
-# 📋 Prerequisites
-
-Before running the project, install:
+Install:
 
 * Node.js 18+
 * npm
-* PostgreSQL
-* pgAdmin 4
 * Git
+* PostgreSQL
 
-Check your Node.js version:
+Check Node.js:
 
 ```bash
 node --version
@@ -213,153 +651,41 @@ npm --version
 
 ---
 
-# 🗄️ PostgreSQL Setup
+## 1. Clone Repository
 
-The project uses **local PostgreSQL**, not Supabase.
-
-Open pgAdmin and create a database:
-
-```text
-Database Name: crm_erp
-```
-
-Alternatively, create it using SQL:
-
-```sql
-CREATE DATABASE crm_erp;
-```
-
-Verify the database exists:
-
-```sql
-SELECT datname
-FROM pg_database;
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd CRM
 ```
 
 ---
 
-# ⚙️ Backend Setup
-
-Navigate to the backend:
-
-```bash
-cd backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create an environment file:
-
-```bash
-copy .env.example .env
-```
-
-For macOS/Linux:
-
-```bash
-cp .env.example .env
-```
-
-Configure `.env`:
-
-```env
-PORT=5000
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=crm_erp
-DB_USER=postgres
-DB_PASSWORD=YOUR_POSTGRES_PASSWORD
-
-JWT_SECRET=your_secure_jwt_secret
-```
-
-> Never commit your real `.env` file to GitHub.
-
----
-
-# 🗃️ Initialize Database
-
-The project contains database schema and initialization scripts.
-
-Run the database initialization:
-
-```bash
-npm run db:init
-```
-
-If migrations are configured:
-
-```bash
-npm run migrate
-```
-
-For development seed data:
-
-```bash
-npm run seed
-```
-
-You can also execute:
-
-```text
-backend/database/schema.sql
-```
-
-directly from pgAdmin Query Tool if required.
-
----
-
-# ▶️ Start Backend
-
-From the `backend` directory:
-
-```bash
-npm start
-```
-
-The API will run on:
-
-```text
-http://localhost:5000
-```
-
-Expected output:
-
-```text
-Server running on port 5000
-Database connected successfully.
-```
-
----
-
-# 💻 Frontend Setup
-
-Open another terminal.
-
-Navigate to the frontend:
+## 2. Install Frontend
 
 ```bash
 cd frontend
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
-Start the development server:
+Create:
+
+```text
+.env.local
+```
+
+Add:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Start:
 
 ```bash
 npm run dev
 ```
 
-Vite will provide a local URL, usually:
+Frontend:
 
 ```text
 http://localhost:5173
@@ -367,31 +693,63 @@ http://localhost:5173
 
 ---
 
-# 🔗 Frontend + Backend
+## 3. Install Backend
 
-During local development:
+Open another terminal:
 
-```text
-React Frontend
-      │
-      │ HTTP Requests
-      ▼
-Express API
-      │
-      │ SQL Queries
-      ▼
-PostgreSQL
+```bash
+cd backend
+npm install
 ```
 
-Typical setup:
+Create:
 
 ```text
-Frontend → http://localhost:5173
-Backend  → http://localhost:5000
-Database → localhost:5432
+.env
 ```
 
-The frontend API client should point to the backend API:
+Add:
+
+```env
+PORT=5000
+DATABASE_URL=postgresql://username:password@localhost:5432/crm
+JWT_SECRET=your_secure_secret
+FRONTEND_URL=http://localhost:5173
+```
+
+---
+
+## 4. Setup Database
+
+Create a PostgreSQL database.
+
+Example:
+
+```text
+crm
+```
+
+Run migration:
+
+```bash
+node scripts/migrate.js
+```
+
+Run seed:
+
+```bash
+node scripts/seed.js
+```
+
+---
+
+## 5. Start Backend
+
+```bash
+npm start
+```
+
+Backend:
 
 ```text
 http://localhost:5000
@@ -399,254 +757,380 @@ http://localhost:5000
 
 ---
 
-# 🔑 Authentication
+# ☁️ Deployment
 
-The application uses token-based authentication.
-
-Typical authentication flow:
+The production architecture uses:
 
 ```text
-User
- │
- ▼
-Login Page
- │
- ▼
-POST /api/auth/login
- │
- ▼
-Express Backend
- │
- ▼
-PostgreSQL
- │
- ▼
-JWT Token
- │
- ▼
-Frontend
+Frontend  → Vercel
+Backend   → Render
+Database  → PostgreSQL
 ```
 
-Protected API requests include the authentication token.
-
----
-
-# 📡 API Modules
-
-The backend currently contains API routes for:
-
-### Authentication
+## Deployment Diagram
 
 ```text
-/api/auth
-```
-
-### Customers
-
-```text
-/api/customers
-```
-
-### Products
-
-```text
-/api/products
-```
-
-### Challans
-
-```text
-/api/challans
-```
-
-Example:
-
-```http
-GET /api/customers
-```
-
-Create a customer:
-
-```http
-POST /api/customers
-```
-
-Get products:
-
-```http
-GET /api/products
-```
-
-Get challans:
-
-```http
-GET /api/challans
-```
-
-Authentication:
-
-```http
-POST /api/auth/login
+                         GitHub
+                        /      \
+                       /        \
+                      ▼          ▼
+                  Vercel       Render
+                     │           │
+                     │           ▼
+                     │       Express API
+                     │           │
+                     │           ▼
+                     │       PostgreSQL
+                     │
+                     └── HTTPS API ──►
 ```
 
 ---
 
-# 🧪 API Testing
+# ▲ Vercel Deployment
 
-You can test the backend using:
+For a monorepo, set:
 
-* Postman
-* VS Code REST Client
-* `backend/api.http`
+```text
+Root Directory:
+frontend
+```
 
-Start the backend first:
+Build command:
+
+```bash
+npm run build
+```
+
+Output directory:
+
+```text
+dist
+```
+
+Add environment variable:
+
+```text
+VITE_API_URL=https://crm-erp-uo8j.onrender.com
+```
+
+After changing a `VITE_*` variable, redeploy the frontend.
+
+---
+
+# 🚀 Render Deployment
+
+Create a Render Web Service.
+
+For the monorepo:
+
+```text
+Root Directory:
+backend
+```
+
+Build command:
+
+```bash
+npm install
+```
+
+Start command:
 
 ```bash
 npm start
 ```
 
-Then execute the API requests.
+Add:
+
+```text
+DATABASE_URL
+JWT_SECRET
+FRONTEND_URL
+```
+
+Use:
+
+```text
+FRONTEND_URL=https://crm-erp-sage.vercel.app
+```
+
+Render provides the production `PORT`, so it should normally not be hardcoded.
+
+---
+
+# 🗃️ Production Database Migration
+
+When running migrations from your local computer against a cloud PostgreSQL database, use the **external database URL**.
+
+PowerShell:
+
+```powershell
+cd backend
+$env:DATABASE_URL="YOUR_EXTERNAL_DATABASE_URL"
+node scripts/migrate.js
+```
+
+Then:
+
+```powershell
+node scripts/seed.js
+```
+
+For a Render backend connecting to a Render PostgreSQL database, configure the backend with the appropriate **internal database URL** when the services support internal connectivity.
+
+Never commit the production database URL.
+
+---
+
+# 🧪 Testing
+
+## Backend
+
+```bash
+npm start
+```
+
+Open:
+
+```text
+http://localhost:5000/
+```
+
+## Health
+
+```text
+http://localhost:5000/api/health
+```
+
+## Login
+
+```bash
+curl -X POST http://localhost:5000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"admin123"}'
+```
+
+## Production Health
+
+```text
+https://crm-erp-uo8j.onrender.com/api/health
+```
+
+---
+
+# 🛠️ Troubleshooting
+
+## `Cannot GET /`
+
+Add a root Express route:
+
+```javascript
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "CRM Backend API is running"
+  });
+});
+```
+
+---
+
+## `404 /auth/login`
+
+Verify that the backend mounts:
+
+```javascript
+app.use("/auth", authRoutes);
+```
+
+and the router contains:
+
+```javascript
+router.post("/login", ...);
+```
+
+The current login endpoint is:
+
+```text
+POST /auth/login
+```
+
+---
+
+## CORS Error
+
+Verify:
+
+```env
+FRONTEND_URL=https://crm-erp-sage.vercel.app
+```
+
+Do not add a trailing `/`.
+
+Also verify Vercel:
+
+```env
+VITE_API_URL=https://crm-erp-uo8j.onrender.com
+```
+
+---
+
+## `500 Internal Server Error`
+
+Check Render logs.
+
+Common causes:
+
+* Missing `DATABASE_URL`
+* Missing `JWT_SECRET`
+* Incorrect database credentials
+* Missing database tables
+* Database connection failure
+* Incorrect environment variables
+
+---
+
+## `relation "users" does not exist`
+
+The production database has not been migrated.
+
+Run:
+
+```bash
+node scripts/migrate.js
+```
+
+Then:
+
+```bash
+node scripts/seed.js
+```
 
 ---
 
 # 🔒 Security
 
-The project follows basic security practices:
+The application uses:
 
-* Password hashing using bcrypt
 * JWT authentication
+* bcrypt password hashing
+* CORS
+* HTTPS in production
+* Environment variables
+* Request validation
 * Protected API routes
-* Environment variables for secrets
-* PostgreSQL parameterized queries
-* Input validation
-* `.env` excluded from Git
 
 Never commit:
 
 ```text
 .env
+.env.local
+.env.production
 ```
 
-or database passwords/secrets.
+Never expose:
+
+* Database passwords
+* JWT secrets
+* API keys
+* Access tokens
 
 ---
 
-# 🌱 Development Workflow
+# ⚠️ Known Limitations
 
-Clone the repository:
+The CRM currently requires an internet connection and is mainly designed for small and medium-sized businesses. Advanced features such as multi-factor authentication, offline access, real-time updates, advanced automation, AI-based analytics, and extensive third-party integrations are not currently implemented. Higher traffic and resource usage may also require upgrading the cloud infrastructure.
 
-```bash
-git clone https://github.com/chetan9130/CRM_ERP.git
+---
+
+# 🔮 Future Enhancements
+
+Planned or possible improvements include:
+
+* Multi-factor authentication
+* Advanced role-based access control
+* Real-time notifications
+* WebSocket integration
+* AI-powered CRM insights
+* Advanced analytics
+* WhatsApp integration
+* Email automation
+* Payment gateway integration
+* Automated reports
+* Cloud file storage
+* Automated backups
+* CI/CD pipeline
+* Advanced monitoring
+* Audit logs
+* Redis caching
+* Advanced business intelligence
+
+---
+
+# 🔄 Development Workflow
+
+```text
+Developer
+    ↓
+GitHub
+    ↓
+Frontend ──────► Vercel
+    │
+    └── API ───► Render
+                   │
+                   ▼
+               PostgreSQL
 ```
 
-Enter the project:
+Recommended workflow:
 
 ```bash
-cd CRM_ERP
-```
+git pull origin main
 
-Install backend dependencies:
-
-```bash
 cd backend
 npm install
-```
-
-Install frontend dependencies:
-
-```bash
-cd ../frontend
-npm install
-```
-
-Run backend:
-
-```bash
-cd ../backend
+node scripts/migrate.js
 npm start
 ```
 
-Run frontend in another terminal:
+In another terminal:
 
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 
----
-
-# 📌 Environment Variables
-
-Backend `.env`:
-
-```env
-PORT=5000
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=crm_erp
-DB_USER=postgres
-DB_PASSWORD=YOUR_POSTGRES_PASSWORD
-
-JWT_SECRET=YOUR_SECRET
-```
-
-Frontend environment variables can be added according to the API configuration used by the application.
-
----
-
-# 🧩 Future Improvements
-
-Planned improvements may include:
-
-* Advanced analytics dashboard
-* Sales and revenue reports
-* Inventory management
-* Invoice generation
-* PDF challan generation
-* Email notifications
-* User and permission management
-* Advanced search and filtering
-* Export reports to Excel/PDF
-* Audit logs
-* Cloud deployment
-* Automated database migrations
-* Docker support
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-### 1. Fork the repository
-
-```bash
-git clone https://github.com/chetan9130/CRM_ERP.git
-```
-
-### 2. Create a branch
-
-```bash
-git checkout -b feature/your-feature
-```
-
-### 3. Make your changes
-
-### 4. Commit
+After testing:
 
 ```bash
 git add .
-git commit -m "Add your feature"
+git commit -m "Update CRM"
+git push origin main
 ```
 
-### 5. Push
+---
 
-```bash
-git push origin feature/your-feature
-```
+# 📊 System Summary
 
-### 6. Open a Pull Request
+| Layer             | Technology   | Responsibility      |
+| ----------------- | ------------ | ------------------- |
+| User              | Browser      | Access application  |
+| Frontend          | React        | User interface      |
+| Language          | TypeScript   | Type safety         |
+| Build Tool        | Vite         | Development/build   |
+| Styling           | Tailwind CSS | Responsive UI       |
+| API Client        | Axios        | HTTP communication  |
+| Backend           | Node.js      | Server runtime      |
+| Framework         | Express.js   | REST API            |
+| Authentication    | JWT          | User authentication |
+| Password Security | bcrypt       | Password hashing    |
+| Validation        | Zod          | Request validation  |
+| Database          | PostgreSQL   | Data storage        |
+| Hosting           | Vercel       | Frontend            |
+| Hosting           | Render       | Backend             |
+| Version Control   | Git/GitHub   | Source management   |
 
 ---
 
@@ -654,11 +1138,11 @@ git push origin feature/your-feature
 
 **Chetan Sonawane**
 
-GitHub:
+Full-Stack Developer
 
-https://github.com/chetan9130
+### Technologies
+
+React • TypeScript • Vite • Tailwind CSS • Node.js • Express.js • PostgreSQL • REST API • JWT • Git • GitHub • Cloud Deployment
 
 ---
 
-
-**CRM-ERP — One platform for managing customers, products, challans, and business operations.**
