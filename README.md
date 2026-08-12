@@ -47,9 +47,11 @@ The following demo accounts can be used to test the different CRM roles.
 | **Warehouse Manager** | `warehouse@example.com` | `warehouse123` |
 | **Accounts Officer** | `accounts@example.com` | `accounts123` |
 
-### Admin
 **Important:** I used the passwords `admin123`, `sales123`, `warehouse123`, and `accounts123`
 as the demo credentials.
+
+### Admin
+
 # 🏗️ System Architecture
 
 The system follows a **three-tier architecture**:
