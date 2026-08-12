@@ -49,9 +49,7 @@ The following demo accounts can be used to test the different CRM roles.
 
 ### Admin
 **Important:** I used the passwords `admin123`, `sales123`, `warehouse123`, and `accounts123`
-as the demo credentials. Make sure these match the passwords actually created by your `seed.js`;
- the bcrypt hashes alone cannot tell us the original plaintext passwords. 
-
+as the demo credentials.
 # 🏗️ System Architecture
 
 The system follows a **three-tier architecture**:
