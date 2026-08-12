@@ -91,20 +91,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }}>
         {(!collapsed || isMobile) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <div style={{
-              width: '2rem',
-              height: '2rem',
-              borderRadius: '8px',
-              backgroundColor: 'var(--primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              color: '#fff',
-              fontSize: '1rem'
-            }}>
-              E
-            </div>
+            <img
+              src="/login_img.png"
+              alt="CRM ERP Logo"
+              style={{
+                width: '2rem',
+                height: '2rem',
+                borderRadius: '8px',
+                objectFit: 'contain'
+              }}
+            />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
                 CRM ERP
@@ -117,20 +113,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
         
         {collapsed && !isMobile && (
-          <div style={{
-            width: '2rem',
-            height: '2rem',
-            borderRadius: '8px',
-            backgroundColor: 'var(--primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            color: '#fff',
-            fontSize: '1rem'
-          }}>
-            E
-          </div>
+          <img
+            src="/login_img.png"
+            alt="CRM ERP Logo"
+            style={{
+              width: '2rem',
+              height: '2rem',
+              borderRadius: '8px',
+              objectFit: 'contain'
+            }}
+          />
         )}
 
         {isMobile && (
