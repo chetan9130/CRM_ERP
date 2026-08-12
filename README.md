@@ -42,10 +42,10 @@ The following demo accounts can be used to test the different CRM roles.
 
 | Role | Email | Demo Password |
 |---|---|---|
-| **Admin** | `admin@example.com` | `admin123` |
-| **Sales Agent** | `sales@example.com` | `sales123` |
-| **Warehouse Manager** | `warehouse@example.com` | `warehouse123` |
-| **Accounts Officer** | `accounts@example.com` | `accounts123` |
+| **Admin** | `admin@mail.com` | `admin123` |
+| **Sales Agent** | `sales@mail.com` | `sales123` |
+| **Warehouse Manager** | `warehouse@mail.com` | `warehouse123` |
+| **Accounts Officer** | `accounts@mail.com` | `accounts123` |
 
 **Important:** I used the passwords `admin123`, `sales123`, `warehouse123`, and `accounts123`
 as the demo credentials.
