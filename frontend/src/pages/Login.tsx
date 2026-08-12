@@ -1,56 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, Info } from 'lucide-react';
+
+const ROLE_HINTS: Record<string, { email: string; password: string; label: string }> = {
+  admin:     { email: 'admin@mail.com',     password: 'admin123',     label: 'Administrator' },
+  sales:     { email: 'sales@mail.com',     password: 'sales123',     label: 'Sales Agent' },
+  warehouse: { email: 'warehouse@mail.com', password: 'warehouse123', label: 'Warehouse Manager' },
+  accounts:  { email: 'accounts@mail.com',  password: 'accounts123',  label: 'Accounts Officer' },
+};
 
 export const Login: React.FC = () => {
   const { login, token } = useAuth();
   const navigate = useNavigate();
 
-  const [selectedRole, setSelectedRole] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [hintRole, setHintRole] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // If already logged in, redirect immediately
   useEffect(() => {
-    if (token) {
-      navigate('/dashboard', { replace: true });
-    }
+    if (token) navigate('/dashboard', { replace: true });
   }, [token, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!selectedRole) {
-      setError('Please select a role to sign in.');
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.');
       return;
-    }
-
-    let targetEmail = '';
-    let targetPassword = '';
-
-    if (selectedRole === 'admin') {
-      targetEmail = 'admin@example.com';
-      targetPassword = 'admin123';
-    } else if (selectedRole === 'sales') {
-      targetEmail = 'sales@example.com';
-      targetPassword = 'sales123';
-    } else if (selectedRole === 'warehouse') {
-      targetEmail = 'warehouse@example.com';
-      targetPassword = 'warehouse123';
-    } else if (selectedRole === 'accounts') {
-      targetEmail = 'accounts@example.com';
-      targetPassword = 'accounts123';
     }
 
     setIsSubmitting(true);
     try {
-      await login(targetEmail, targetPassword);
+      await login(email.trim(), password);
       navigate('/dashboard', { replace: true });
     } catch (err: any) {
       console.error(err);
-      if (err.response && err.response.data && err.response.data.error) {
+      if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
         setError('Invalid credentials or server unreachable.');
@@ -59,6 +49,8 @@ export const Login: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
+  const hint = hintRole ? ROLE_HINTS[hintRole] : null;
 
   return (
     <div style={{
@@ -73,7 +65,7 @@ export const Login: React.FC = () => {
     }}>
       <div className="card" style={{
         width: '100%',
-        maxWidth: '400px',
+        maxWidth: '420px',
         padding: '2.5rem 2.25rem',
         backgroundColor: '#ffffff',
         border: '1px solid var(--border-color)',
@@ -126,33 +118,118 @@ export const Login: React.FC = () => {
           </div>
         )}
 
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          {/* Quick Role Select */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+
+          {/* Email */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-              Select Demo Account Role *
+            <label htmlFor="login-email" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+              Email Address
             </label>
-            <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
+            <input
+              id="login-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
               required
               disabled={isSubmitting}
               style={{ height: '42px', fontSize: '0.9rem' }}
-            >
-              <option value="">-- Choose Role --</option>
-              <option value="admin">Administrator (admin@example.com)</option>
-              <option value="sales">Sales Agent (sales@example.com)</option>
-              <option value="warehouse">Warehouse Manager (warehouse@example.com)</option>
-              <option value="accounts">Accounts Officer (accounts@example.com)</option>
-            </select>
+            />
           </div>
 
-          {/* Submit Button */}
+          {/* Password */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <label htmlFor="login-password" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+              Password
+            </label>
+            <div style={{ position: 'relative' }}>
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                disabled={isSubmitting}
+                style={{ height: '42px', fontSize: '0.9rem', width: '100%', paddingRight: '2.75rem', boxSizing: 'border-box' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => !p)}
+                tabIndex={-1}
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  color: 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {showPassword
+                  ? <EyeOff style={{ width: '1rem', height: '1rem' }} />
+                  : <Eye style={{ width: '1rem', height: '1rem' }} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Demo Role Hint (reference only — does NOT auto-fill) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <label htmlFor="hint-role" style={{
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem'
+            }}>
+              <Info style={{ width: '0.85rem', height: '0.85rem' }} />
+              Demo Credentials Reference
+            </label>
+            <select
+              id="hint-role"
+              value={hintRole}
+              onChange={(e) => setHintRole(e.target.value)}
+              disabled={isSubmitting}
+              style={{ height: '40px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}
+            >
+              <option value="">-- Select role to see demo credentials --</option>
+              <option value="admin">Administrator</option>
+              <option value="sales">Sales Agent</option>
+              <option value="warehouse">Warehouse Manager</option>
+              <option value="accounts">Accounts Officer</option>
+            </select>
+
+            {hint && (
+              <div style={{
+                marginTop: '0.25rem',
+                padding: '0.6rem 0.85rem',
+                backgroundColor: 'rgba(8, 120, 249, 0.05)',
+                border: '1px solid rgba(8, 120, 249, 0.15)',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.78rem',
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6
+              }}>
+                <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.2rem' }}>
+                  {hint.label}
+                </strong>
+                <span>Email: <code style={{ userSelect: 'all' }}>{hint.email}</code></span><br />
+                <span>Password: <code style={{ userSelect: 'all' }}>{hint.password}</code></span>
+              </div>
+            )}
+          </div>
+
+          {/* Submit */}
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ width: '100%', marginTop: '0.5rem', height: '42px', fontWeight: 700 }}
+            style={{ width: '100%', marginTop: '0.25rem', height: '42px', fontWeight: 700 }}
             disabled={isSubmitting}
           >
             {isSubmitting ? (

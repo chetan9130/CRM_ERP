@@ -1,9 +1,9 @@
 -- Seed Users
 INSERT INTO users (id, name, email, password_hash, role) VALUES
-('b19280d0-7a0e-436f-8700-d6cdbbca453f', 'Admin User', 'admin@example.com', '$2a$10$x4jbwtxA5aVASbYASFpKKOkqhyte0FSOHJVDioj0bgGRrO.ANqnFK', 'admin'),
-('c5be9e2b-f63b-4171-8bc6-9467d0251786', 'Sales Agent', 'sales@example.com', '$2a$10$xbu8fIL1rec3VmbxewD2UesLE/bRLsA2sLSEXsBVyV4tdCyA7P03C', 'sales'),
-('da7cfde6-3507-4e00-880f-7fa40d9990e1', 'Warehouse Mgr', 'warehouse@example.com', '$2a$10$3BKr/z0bLoTzBghLbOoOceF164QnjaOZ4BOBYfSXNftR/8SxQMjQO', 'warehouse'),
-('e3b2b80a-9d90-482a-bc91-37f22709e863', 'Accounts Officer', 'accounts@example.com', '$2a$10$dUFbD4wAFpY0wrtFZd9EXe2dvZ5EubAkgarJmLekBFTcDHG0aycJG', 'accounts');
+('b19280d0-7a0e-436f-8700-d6cdbbca453f', 'Admin User', 'admin@mail.com', 'admin123', 'admin'),
+('c5be9e2b-f63b-4171-8bc6-9467d0251786', 'Sales Agent', 'sales@mail.com', 'sales123', 'sales'),
+('da7cfde6-3507-4e00-880f-7fa40d9990e1', 'Warehouse Mgr', 'warehouse@mail.com', 'warehouse123', 'warehouse'),
+('e3b2b80a-9d90-482a-bc91-37f22709e863', 'Accounts Officer', 'accounts@mail.com', 'accounts123', 'accounts');
 
 -- Seed Customers
 INSERT INTO customers (id, name, mobile, email, business_name, gst_number, customer_type, address, status, follow_up_date) VALUES
