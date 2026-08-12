@@ -48,25 +48,6 @@ The following demo accounts can be used to test the different CRM roles.
 | **Accounts Officer** | `accounts@example.com` | `accounts123` |
 
 ### Admin
-
-```text
-Email: admin@example.com
-Password: admin123
-Role: admin
-
-Email: sales@example.com
-Password: sales123
-Role: sales
-
-Email: warehouse@example.com
-Password: warehouse123
-Role: warehouse
-
-Email: accounts@example.com
-Password: accounts123
-Role: accounts
-
-
 **Important:** I used the passwords `admin123`, `sales123`, `warehouse123`, and `accounts123`
 as the demo credentials. Make sure these match the passwords actually created by your `seed.js`;
  the bcrypt hashes alone cannot tell us the original plaintext passwords. 
